@@ -5,10 +5,22 @@ const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema(
     {
-        name: {
+        firstname: {
             type: String,
             required: true,
             trim: true,
+            lowercase: true,
+        },
+        lastname: {
+            type: String,
+            required: true,
+            trim: true,
+            lowercase: true,
+        },
+        username: {
+            type: String,
+            required: true,
+            unique: true,
             lowercase: true,
         },
         email: {
@@ -49,9 +61,6 @@ const userSchema = new mongoose.Schema(
                         phone: {
                             type: String,
                         },
-                        email: {
-                            type: String,
-                        },
                     },
                 ],
                 paiementCards: [
@@ -74,8 +83,14 @@ const userSchema = new mongoose.Schema(
                 ],
             },
         ],
-        isVendor: {
-            type: Boolean,
+        roles: {
+            type: [
+                {
+                    type: String,
+                    enum: ['user', 'vendor', 'admin'],
+                },
+            ],
+            default: ['user'],
         },
         notifications: {
             type: Boolean,
