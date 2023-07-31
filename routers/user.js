@@ -8,7 +8,24 @@ const router = new express.Router();
 router.post('/users', async (req, res) => {
 	console.log(req.body);
 	// const user = new User(req.body);
-	const { username, firstname, lastname, email, password, number, street, city, zipCode, phone, cardName, cardNumber, cardType, expDate, isVendor, notifications } = req.body;
+	const {
+		username,
+		firstname,
+		lastname,
+		email,
+		password,
+		number,
+		street,
+		city,
+		zipCode,
+		phone,
+		cardName,
+		cardNumber,
+		cardType,
+		expDate,
+		// isVendor,
+		notifications,
+	} = req.body;
 	console.log('username', username);
 	const user = new User({
 		username: username,
@@ -35,11 +52,10 @@ router.post('/users', async (req, res) => {
 				},
 			],
 		},
-		isVendor: isVendor,
+		// isVendor: isVendor,
 		notifications: notifications,
 	});
 
-	console.log('post user :', User);
 	try {
 		await user.save();
 		const token = await user.generateAuthToken();
