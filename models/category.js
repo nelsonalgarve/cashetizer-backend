@@ -15,10 +15,10 @@ const categorySchema = new mongoose.Schema({
 		required: true,
 	},
 	img: {
-		type: string,
+		type: String,
 		required: false,
 	},
 });
 
-const Category = mongoose.model('Category', categorySchema);
+const Category = mongoose.model('categories', categorySchema);
 module.exports = Category;
