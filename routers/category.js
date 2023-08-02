@@ -11,4 +11,10 @@ router.get('/category/autocomplete', async (req, res) => {
 	res.json(results.map((result) => result.name));
 });
 
+router.get('/categories', async (req, res) => {
+	const categories = await Category.find();
+	console.log(categories);
+	res.json({ result: true, data: categories });
+});
+
 module.exports = router;
