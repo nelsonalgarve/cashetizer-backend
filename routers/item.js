@@ -19,6 +19,22 @@ router.get('/items', async (req, res) => {
 //fetch an item
 router.get('/items/:id', async (req, res) => {
 	try {
+		console.log('token from front', req.header('Authorization'));
+		if (
+			!req.body.ownerId ||
+			!req.body.name ||
+			!req.body.description ||
+			!req.body.category ||
+			!req.body.prices ||
+			!req.body.caution ||
+			!req.body.isAvailable ||
+			!req.body.localisation ||
+			!req.body.periode.dateStart ||
+			!req.body.periode.dateEnd
+		) {
+			return res.status(400).json({ message: 'Missing required fields' });
+		}
+
 		const item = await Item.findOne({ _id: req.params.id }).populate('owner');
 		if (!item) {
 			res.status(404).send({ error: 'Item not found' });
@@ -29,8 +45,10 @@ router.get('/items/:id', async (req, res) => {
 	}
 });
 
+// POSTER UN ITEM
 router.post('/items', async (req, res) => {
 	try {
+		console.log(req.body);
 		const token = req.header('Authorization').replace('Bearer ', '');
 
 		// Verify the token and decode the payload
@@ -38,8 +56,9 @@ router.post('/items', async (req, res) => {
 
 		// Find the user based on the _id from the decoded payload
 		const user = await User.findById(decoded._id);
-		console.log(decoded);
-		console.log(users.username);
+		console.log('decodedId', decoded);
+		console.log(user.username);
+		console.log('USER_ID_FROM BACKEND', user._id);
 
 		if (!user) {
 			throw new Error('User not found');
@@ -49,6 +68,11 @@ router.post('/items', async (req, res) => {
 			ownerId: user._id,
 			name: req.body.name,
 			description: req.body.description,
+			category: req.body.category,
+			prices: req.body.prices,
+			caution: req.body.caution,
+			isAvailable: req.body.isAvailable,
+			localisation: req.body.localisation,
 		});
 
 		await newItem.save();

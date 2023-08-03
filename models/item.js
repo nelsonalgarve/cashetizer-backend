@@ -5,35 +5,35 @@ const itemSchema = new mongoose.Schema(
 	{
 		ownerId: {
 			type: ObjectID,
-			required: true,
+			// required: true,
 			ref: 'User',
 		},
 		name: {
 			type: String,
-			required: true,
+			// required: true,
 			trim: true,
 		},
 		description: {
 			dimensions: {
 				hauteur: {
 					type: Number,
-					required: true,
+					// required: true,
 					trim: true,
 				},
 				largeur: {
 					type: Number,
-					required: true,
+					// required: true,
 					trim: true,
 				},
 				poids: {
 					type: Number,
-					required: true,
+					// required: true,
 					trim: true,
 				},
 			},
 			etat: {
 				type: String,
-				required: true,
+				// required: true,
 				trim: true,
 			},
 			details: {
@@ -43,19 +43,19 @@ const itemSchema = new mongoose.Schema(
 			photos: [
 				{
 					type: String,
-					required: true,
+					// required: true,
 				},
 			],
 			videos: [
 				{
 					type: String,
-					required: true,
+					// required: true,
 				},
 			],
 		},
 		category: {
 			type: ObjectID,
-			required: true,
+			// required: true,
 			ref: 'Category',
 		},
 		prices: {
@@ -97,6 +97,14 @@ const itemSchema = new mongoose.Schema(
 			longitude: {
 				type: String,
 				trim: true,
+			},
+		},
+		periode: {
+			dateStart: {
+				type: Date,
+			},
+			dateEnd: {
+				type: Date,
 			},
 		},
 	},
