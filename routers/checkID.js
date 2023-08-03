@@ -44,8 +44,8 @@ router.post('/IDCheck', async (req, res) => {
   }
 });
 
-router.post('/testUpload', async (req, res) => {
-  const livePhotoPath = `./tmp/${uniqid()}_live.jpg`;
+/* router.post('/testUpload', async (req, res) => {
+  const livePhotoPath = `./tmp/${uniqid()}.jpg`;
   const resultMove = await req.files.photoFromFront.mv(livePhotoPath)
   
   if (!resultMove) {
@@ -56,7 +56,7 @@ router.post('/testUpload', async (req, res) => {
   }
  
   fs.unlinkSync(livePhotoPath);
- });
+ }); */
 
 
 module.exports = router;
