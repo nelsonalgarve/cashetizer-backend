@@ -89,10 +89,13 @@ const itemSchema = new mongoose.Schema(
 			type: Boolean,
 			default: true,
 		},
-		positionRange: {
-			min: {
-				type: Number,
-				required: true,
+		localisation: {
+			latitude: {
+				type: String,
+				trim: true,
+			},
+			longitude: {
+				type: String,
 				trim: true,
 			},
 		},

@@ -1,6 +1,7 @@
 const express = require('express');
 const Item = require('../models/item');
-
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 const Auth = require('../middleware/auth');
 
 const router = new express.Router();
@@ -28,12 +29,25 @@ router.get('/items/:id', async (req, res) => {
 	}
 });
 
-//create an item
-router.post('/items', Auth, async (req, res) => {
+router.post('/items', async (req, res) => {
 	try {
+		const token = req.header('Authorization').replace('Bearer ', '');
+
+		// Verify the token and decode the payload
+		const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+		// Find the user based on the _id from the decoded payload
+		const user = await User.findById(decoded._id);
+		console.log(user.name);
+
+		if (!user) {
+			throw new Error('User not found');
+		}
+
 		const newItem = new Item({
-			...req.body,
-			owner: req.user._id,
+			ownerId: user._id,
+			name: req.body.name,
+			description: req.body.description,
 		});
 
 		await newItem.save();
@@ -44,6 +58,23 @@ router.post('/items', Auth, async (req, res) => {
 		res.status(400).send({ message: 'error' });
 	}
 });
+
+// router.post('/items', async (req, res) => {
+// 	try {
+// 		console.log(req.body);
+// 		const newItem = new Item({
+// 			...req.body,
+// 			owner: req.user._id,
+// 		});
+
+// 		await newItem.save();
+// 		res.status(201).send(newItem);
+// 	} catch (error) {
+// 		console.log('itemrouter');
+// 		console.log({ error });
+// 		res.status(400).send({ message: 'error' });
+// 	}
+// });
 
 //update an item
 
