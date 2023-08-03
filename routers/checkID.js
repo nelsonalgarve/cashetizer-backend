@@ -12,9 +12,9 @@ router.post('/IDCheck', async (req, res) => {
 		const livePhoto = req.files.livePhoto;
 
 		// Chemin pour enregistrer les images temporaires avant de les envoyer à Cloudinary
-		const rectoPath = `./tmp/${uniqid()}_recto.jpg`;
-		const versoPath = `./tmp/${uniqid()}_verso.jpg`;
-		const livePhotoPath = `./tmp/${uniqid()}_live.jpg`;
+		const rectoPath = `/tmp/${uniqid()}_recto.jpg`;
+		const versoPath = `/tmp/${uniqid()}_verso.jpg`;
+		const livePhotoPath = `/tmp/${uniqid()}_live.jpg`;
 
 		// Enregistrer les fichiers temporaires
 		await rectoImage.mv(rectoPath);
