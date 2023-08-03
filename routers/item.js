@@ -38,7 +38,8 @@ router.post('/items', async (req, res) => {
 
 		// Find the user based on the _id from the decoded payload
 		const user = await User.findById(decoded._id);
-		console.log(user.name);
+		console.log(decoded);
+		console.log(users.username);
 
 		if (!user) {
 			throw new Error('User not found');
