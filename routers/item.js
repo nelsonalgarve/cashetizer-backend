@@ -8,8 +8,32 @@ const router = new express.Router();
 
 //fetch all items
 router.get('/items', async (req, res) => {
+	console.log(req.params);
 	try {
 		const items = await Item.find({});
+		res.status(200).send(items);
+	} catch (error) {
+		res.status(400).send(error);
+	}
+});
+
+// Filter Items by keyword
+router.get('/items/filter', async (req, res) => {
+	try {
+		const filterKeyword = req.query.keyword || ''; // Extract the filter keyword from the query parameter or set it to an empty string if not provided
+		const filterOptions = {}; // You can add additional filter options if needed
+
+		// Create a filter object based on your data model and the filter keyword
+		if (filterKeyword) {
+			filterOptions.$or = [
+				{ name: { $regex: filterKeyword, $options: 'i' } }, // Case-insensitive search on the "name" field
+				{ details: { $regex: filterKeyword, $options: 'i' } }, // Case-insensitive search on the "details" field
+			];
+		}
+
+		// Use the filterOptions object to query the database
+		const items = await Item.find(filterOptions);
+
 		res.status(200).send(items);
 	} catch (error) {
 		res.status(400).send(error);
