@@ -16,10 +16,10 @@ const mockRouter = require('./routers/mock');
 
 // const orderRouter = require("./routers/order");
 
-const fs = require('fs');
-if (!fs.existsSync('./tmp')) {
-	fs.mkdirSync('./tmp');
-}
+// const fs = require('fs');
+// if (!fs.existsSync('./tmp')) {
+// 	fs.mkdirSync('./tmp');
+// }
 
 const app = express();
 app.use(fileUpload());
@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(userRouter);
+// app.use(userRouter);
 
 // app.use('/item', itemRouter);
 // app.use('/testUpload', testUploadRouter);
