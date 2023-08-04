@@ -35,6 +35,6 @@ app.use(itemRouter);
 app.use(testUploadRouter);
 app.use(cartRouter);
 app.use(checkIDRouter);
-app.use(categoryRouter);
+app.use('/category', categoryRouter);
 // app.use(orderRouter);
 module.exports = app;
