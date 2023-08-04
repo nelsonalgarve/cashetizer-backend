@@ -31,10 +31,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(userRouter);
 
-app.use(itemRouter);
-app.use(testUploadRouter);
-app.use(cartRouter);
-app.use(checkIDRouter);
+app.use('/item', itemRouter);
+app.use('/testUpload', testUploadRouter);
+app.use('/cart', cartRouter);
+app.use('/checkId', checkIDRouter);
 app.use('/category', categoryRouter);
 // app.use(orderRouter);
 module.exports = app;
