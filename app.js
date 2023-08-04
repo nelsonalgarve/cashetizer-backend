@@ -12,6 +12,8 @@ const testUploadRouter = require('./routers/checkID');
 const itemRouter = require('./routers/item');
 const cartRouter = require('./routers/cart');
 const categoryRouter = require('./routers/category');
+const mockRouter = require('./routers/mock');
+
 // const orderRouter = require("./routers/order");
 
 const fs = require('fs');
@@ -36,5 +38,6 @@ app.use('/testUpload', testUploadRouter);
 app.use('/cart', cartRouter);
 app.use('/checkId', checkIDRouter);
 app.use('/category', categoryRouter);
+app.use('/mock', mockRouter);
 // app.use(orderRouter);
 module.exports = app;
