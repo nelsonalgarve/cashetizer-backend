@@ -16,10 +16,10 @@ const mockRouter = require('./routers/mock');
 
 // const orderRouter = require("./routers/order");
 
-// const fs = require('fs');
-// if (!fs.existsSync('./tmp')) {
-// 	fs.mkdirSync('./tmp');
-// }
+const fs = require('fs');
+if (!fs.existsSync('./tmp')) {
+	fs.mkdirSync('./tmp');
+}
 
 const app = express();
 app.use(fileUpload());
