@@ -94,19 +94,25 @@ const itemSchema = new mongoose.Schema(
 				type: String,
 				trim: true,
 			},
+
 			longitude: {
 				type: String,
 				trim: true,
 			},
 		},
-		periode: {
-			dateStart: {
-				type: Date,
-			},
-			dateEnd: {
-				type: Date,
-			},
+		livraison: {
+			type: String,
 		},
+		periodes: [
+			{
+				start: {
+					type: Date,
+				},
+				end: {
+					type: Date,
+				},
+			},
+		],
 	},
 	{
 		timestamps: true,

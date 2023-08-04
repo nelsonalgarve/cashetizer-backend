@@ -20,20 +20,6 @@ router.get('/items', async (req, res) => {
 router.get('/items/:id', async (req, res) => {
 	try {
 		console.log('token from front', req.header('Authorization'));
-		if (
-			!req.body.ownerId ||
-			!req.body.name ||
-			!req.body.description ||
-			!req.body.category ||
-			!req.body.prices ||
-			!req.body.caution ||
-			!req.body.isAvailable ||
-			!req.body.localisation ||
-			!req.body.periode.dateStart ||
-			!req.body.periode.dateEnd
-		) {
-			return res.status(400).json({ message: 'Missing required fields' });
-		}
 
 		const item = await Item.findOne({ _id: req.params.id }).populate('owner');
 		if (!item) {
@@ -49,6 +35,22 @@ router.get('/items/:id', async (req, res) => {
 router.post('/items', async (req, res) => {
 	try {
 		console.log(req.body);
+		if (
+			// !req.body.ownerId ||
+			!req.body.name
+			// !req.body.description ||
+			// !req.body.category ||
+			// !req.body.price ||
+			// !req.body.caution ||
+			// // !req.body.isAvailable ||
+			// !req.body.localisation ||
+			// !req.body.periodes.dateStart ||
+			// !req.body.periodes.dateEnd ||
+			// !req.body.etat ||
+			// !req.body.remise
+		) {
+			return res.status(400).json({ message: 'Missing required fields' });
+		}
 		const token = req.header('Authorization').replace('Bearer ', '');
 
 		// Verify the token and decode the payload
@@ -67,12 +69,29 @@ router.post('/items', async (req, res) => {
 		const newItem = new Item({
 			ownerId: user._id,
 			name: req.body.name,
-			description: req.body.description,
+			description: {
+				details: req.body.description,
+				etat: req.body.etat,
+				photos: [req.body.photos],
+			},
 			category: req.body.category,
-			prices: req.body.prices,
+			prices: {
+				perDay: req.body.prices,
+			},
 			caution: req.body.caution,
-			isAvailable: req.body.isAvailable,
-			localisation: req.body.localisation,
+			// isAvailable: req.body.isAvailable,
+			category: req.body.category,
+
+			localisation: {
+				latitude: req.body.localisation.latitude,
+				longitude: req.body.localisation.longitude,
+			},
+			periodes: [
+				{
+					start: req.body.periodes.start,
+					end: req.body.periodes.end,
+				},
+			],
 		});
 
 		await newItem.save();

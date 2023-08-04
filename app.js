@@ -8,11 +8,10 @@ var logger = require('morgan');
 
 const userRouter = require('./routers/user');
 const checkIDRouter = require('./routers/checkID');
-const testUploadRouter = require('./routers/checkID');
+const uploadPhotoRouter = require('./routers/checkID');
 const itemRouter = require('./routers/item');
 const cartRouter = require('./routers/cart');
 const categoryRouter = require('./routers/category');
-const mockRouter = require('./routers/mock');
 
 // const orderRouter = require("./routers/order");
 
@@ -34,10 +33,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(userRouter);
 
 app.use('/item', itemRouter);
-app.use('/testUpload', testUploadRouter);
+app.use('/Upload', uploadPhotoRouter);
 app.use('/cart', cartRouter);
 app.use('/checkId', checkIDRouter);
 app.use('/category', categoryRouter);
-app.use('/mock', mockRouter);
+app.use('./user', userRouter);
+
 // app.use(orderRouter);
 module.exports = app;

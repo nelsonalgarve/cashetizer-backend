@@ -44,18 +44,18 @@ router.post('/IDCheck', async (req, res) => {
 	}
 });
 
-/* router.post('/testUpload', async (req, res) => {
-  const livePhotoPath = `./tmp/${uniqid()}.jpg`;
-  const resultMove = await req.files.photoFromFront.mv(livePhotoPath)
+router.post('/Upload', async (req, res) => {
+	const livePhotoPath = `/tmp/${uniqid()}.jpg`;
+	const resultMove = await req.files.photoFromFront.mv(livePhotoPath);
+	console.log(req.body);
+	if (!resultMove) {
+		const livePhotoresultCloudinary = await cloudinary.uploader.upload(livePhotoPath);
+		res.json({ result: true, url: livePhotoresultCloudinary.secure_url });
+	} else {
+		res.json({ result: false, error: resultMove });
+	}
 
-  if (!resultMove) {
-    const livePhotoresultCloudinary = await cloudinary.uploader.upload(livePhotoPath);
-    res.json({ result: true, url: livePhotoresultCloudinary.secure_url });
-  } else {
-    res.json({ result: false, error: resultMove });
-  }
-
-  fs.unlinkSync(livePhotoPath);
- }); */
+	fs.unlinkSync(livePhotoPath);
+});
 
 module.exports = router;
