@@ -143,7 +143,37 @@ router.get('/items/category/:categoryId', async (req, res) => {
 // FETCH ITEMS BY CATEGORY NAME ----------------------------------------------------------------
 router.get('/items/categoryname/:categoryName', async (req, res) => {
 	const categoryName = req.params.categoryName;
-	console.log(categoryName);
+	const { startDate, endDate } = req.query;
+
+	try {
+		const decodedCategoryName = decodeURIComponent(categoryName);
+		const category = await Category.findOne({ name: decodedCategoryName });
+
+		if (!category) {
+			return res.status(404).json({ message: 'Category not found' });
+		}
+
+		let itemsQuery = Item.find({ category: category._id }).populate('category');
+
+		if (startDate && endDate) {
+			itemsQuery = itemsQuery.where('periodes').elemMatch({
+				start: { $lte: new Date(endDate) },
+				end: { $gte: new Date(startDate) },
+			});
+		}
+
+		const items = await itemsQuery.exec();
+		res.json(items);
+	} catch (err) {
+		console.error('Error fetching items by category name:', err);
+		res.status(500).json({ message: 'Error fetching items by category name', error: err.message });
+	}
+});
+
+// UPDATE AN ITEM -------------------------------------------------------------------------------
+router.get('/items/categoryname/:categoryName', async (req, res) => {
+	const categoryName = req.params.categoryName;
+	const { startDate, endDate } = req.query;
 
 	try {
 		// Decode the encoded category name before using it in the query
@@ -156,8 +186,21 @@ router.get('/items/categoryname/:categoryName', async (req, res) => {
 			return res.status(404).json({ message: 'Category not found' });
 		}
 
-		// Fetch items by category ID
-		const items = await Item.find({ category: category._id }).populate('category');
+		// Build the query dynamically based on the parameters
+		let query = { category: category._id };
+
+		if (startDate || endDate) {
+			query.date = {};
+			if (startDate) {
+				query.date.$gte = new Date(startDate);
+			}
+			if (endDate) {
+				query.date.$lte = new Date(endDate);
+			}
+		}
+
+		// Fetch items by category ID and date range
+		const items = await Item.find(query).populate('category');
 		res.json(items);
 	} catch (err) {
 		console.error('Error fetching items by category name:', err);
@@ -165,55 +208,30 @@ router.get('/items/categoryname/:categoryName', async (req, res) => {
 	}
 });
 
-// router.get('/items/categoryname/:categoryName', async (req, res) => {
-// 	const categoryName = req.params.categoryName;
-// 	console.log(categoryName);
+// router.patch('/items/:id', Auth, async (req, res) => {
+// 	const updates = Object.keys(req.body);
+// 	const allowedUpdates = ['name', 'description', 'category', 'price'];
+
+// 	const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+
+// 	if (!isValidOperation) {
+// 		return res.status(400).send({ error: 'invalid updates' });
+// 	}
 
 // 	try {
-// 		// Decode the encoded category name before using it in the query
-// 		const decodedCategoryName = decodeURIComponent(categoryName);
+// 		const item = await Item.findOne({ _id: req.params.id });
 
-// 		// Find the category with the given name
-// 		const category = await Category.findOne({ name: decodedCategoryName });
-
-// 		if (!category) {
-// 			return res.status(404).json({ message: 'Category not found' });
+// 		if (!item) {
+// 			return res.status(404).send();
 // 		}
 
-// 		// Fetch items by category ID
-// 		const items = await Item.find({ category: category._id }).populate('category').populate('periodes');
-// 		res.json(items);
-// 	} catch (err) {
-// 		console.error('Error fetching items by category name:', err);
-// 		res.status(500).json({ message: 'Error fetching items by category name' });
+// 		updates.forEach((update) => (item[update] = req.body[update]));
+// 		await item.save();
+// 		res.send(item);
+// 	} catch (error) {
+// 		res.status(400).send(error);
 // 	}
 // });
-
-// UPDATE AN ITEM -------------------------------------------------------------------------------
-router.patch('/items/:id', Auth, async (req, res) => {
-	const updates = Object.keys(req.body);
-	const allowedUpdates = ['name', 'description', 'category', 'price'];
-
-	const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
-
-	if (!isValidOperation) {
-		return res.status(400).send({ error: 'invalid updates' });
-	}
-
-	try {
-		const item = await Item.findOne({ _id: req.params.id });
-
-		if (!item) {
-			return res.status(404).send();
-		}
-
-		updates.forEach((update) => (item[update] = req.body[update]));
-		await item.save();
-		res.send(item);
-	} catch (error) {
-		res.status(400).send(error);
-	}
-});
 
 //delete item
 router.delete('/items/:id', Auth, async (req, res) => {
