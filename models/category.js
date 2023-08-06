@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const ObjectID = mongoose.Schema.Types.ObjectId;
+const Schema = mongoose.Schema;
 
 const categorySchema = new mongoose.Schema({
 	name: {
@@ -20,5 +20,5 @@ const categorySchema = new mongoose.Schema({
 	},
 });
 
-const Category = mongoose.model('categories', categorySchema);
+const Category = mongoose.model('Category', categorySchema);
 module.exports = Category;

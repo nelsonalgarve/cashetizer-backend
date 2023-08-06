@@ -1,7 +1,9 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const Item = require('../models/item');
-const jwt = require('jsonwebtoken');
+const Category = require('../models/category');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 const Auth = require('../middleware/auth');
 
 const router = new express.Router();
@@ -127,23 +129,44 @@ router.post('/items', async (req, res) => {
 	}
 });
 
-// router.post('/items', async (req, res) => {
-// 	try {
-// 		console.log(req.body);
-// 		const newItem = new Item({
-// 			...req.body,
-// 			owner: req.user._id,
-// 		});
+// Fetch items by category _id
 
-// 		await newItem.save();
-// 		res.status(201).send(newItem);
-// 	} catch (error) {
-// 		console.log('itemrouter');
-// 		console.log({ error });
-// 		res.status(400).send({ message: 'error' });
-// 	}
-// });
+router.get('/items/category/:categoryId', async (req, res) => {
+	const categoryId = req.params.categoryId;
 
+	try {
+		const items = await Item.find({ category: categoryId }).populate('category');
+		res.json(items);
+	} catch (err) {
+		console.error('Error fetching items by category:', err);
+		res.status(500).json({ message: 'Error fetching items by category' });
+	}
+});
+
+// Fetch items by category name
+router.get('/items/categoryname/:categoryName', async (req, res) => {
+	const categoryName = req.params.categoryName;
+	console.log(categoryName);
+
+	try {
+		// Decode the encoded category name before using it in the query
+		const decodedCategoryName = decodeURIComponent(categoryName);
+
+		// Find the category with the given name
+		const category = await Category.findOne({ name: decodedCategoryName });
+
+		if (!category) {
+			return res.status(404).json({ message: 'Category not found' });
+		}
+
+		// Fetch items by category ID
+		const items = await Item.find({ category: category._id }).populate('category');
+		res.json(items);
+	} catch (err) {
+		console.error('Error fetching items by category name:', err);
+		res.status(500).json({ message: 'Error fetching items by category name' });
+	}
+});
 //update an item
 
 router.patch('/items/:id', Auth, async (req, res) => {
