@@ -100,6 +100,7 @@ router.post('/items', async (req, res) => {
 				details: req.body.description,
 				etat: req.body.etat,
 				photos: [req.body.photos],
+				videos: [req.body.videos],
 			},
 			category: req.body.category,
 			prices: {
@@ -113,12 +114,7 @@ router.post('/items', async (req, res) => {
 				latitude: req.body.localisation.latitude,
 				longitude: req.body.localisation.longitude,
 			},
-			periodes: [
-				{
-					start: req.body.periodes.start,
-					end: req.body.periodes.end,
-				},
-			],
+			periodes: req.body.periodes,
 		});
 
 		await newItem.save();
