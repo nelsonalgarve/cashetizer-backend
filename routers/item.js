@@ -59,6 +59,7 @@ router.get('/items/:id', async (req, res) => {
 
 // POSTER UN ITEM
 router.post('/items', async (req, res) => {
+	console.log(req.body);
 	try {
 		console.log(req.body);
 		if (
@@ -122,6 +123,7 @@ router.post('/items', async (req, res) => {
 
 		await newItem.save();
 		res.status(201).send(newItem);
+		console.log('ITEM CREATED: ', newItem);
 	} catch (error) {
 		console.log('itemrouter');
 		console.log({ error });
@@ -129,8 +131,7 @@ router.post('/items', async (req, res) => {
 	}
 });
 
-// Fetch items by category _id
-
+// FETCH ITEMS BY CATEGORY ID -------------------------------------------------------------------------------
 router.get('/items/category/:categoryId', async (req, res) => {
 	const categoryId = req.params.categoryId;
 
@@ -143,7 +144,7 @@ router.get('/items/category/:categoryId', async (req, res) => {
 	}
 });
 
-// Fetch items by category name
+// FETCH ITEMS BY CATEGORY NAME ----------------------------------------------------------------
 router.get('/items/categoryname/:categoryName', async (req, res) => {
 	const categoryName = req.params.categoryName;
 	console.log(categoryName);
@@ -160,15 +161,15 @@ router.get('/items/categoryname/:categoryName', async (req, res) => {
 		}
 
 		// Fetch items by category ID
-		const items = await Item.find({ category: category._id }).populate('category');
+		const items = await Item.find({ category: category._id }).populate('category').populate('periodes');
 		res.json(items);
 	} catch (err) {
 		console.error('Error fetching items by category name:', err);
 		res.status(500).json({ message: 'Error fetching items by category name' });
 	}
 });
-//update an item
 
+// UPDATE AN ITEM -------------------------------------------------------------------------------
 router.patch('/items/:id', Auth, async (req, res) => {
 	const updates = Object.keys(req.body);
 	const allowedUpdates = ['name', 'description', 'category', 'price'];
