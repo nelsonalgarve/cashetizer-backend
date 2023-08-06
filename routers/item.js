@@ -161,13 +161,37 @@ router.get('/items/categoryname/:categoryName', async (req, res) => {
 		}
 
 		// Fetch items by category ID
-		const items = await Item.find({ category: category._id }).populate('category').populate('periodes');
+		const items = await Item.find({ category: category._id }).populate('category');
 		res.json(items);
 	} catch (err) {
 		console.error('Error fetching items by category name:', err);
-		res.status(500).json({ message: 'Error fetching items by category name' });
+		res.status(500).json({ message: 'Error fetching items by category name', error: err.message });
 	}
 });
+
+// router.get('/items/categoryname/:categoryName', async (req, res) => {
+// 	const categoryName = req.params.categoryName;
+// 	console.log(categoryName);
+
+// 	try {
+// 		// Decode the encoded category name before using it in the query
+// 		const decodedCategoryName = decodeURIComponent(categoryName);
+
+// 		// Find the category with the given name
+// 		const category = await Category.findOne({ name: decodedCategoryName });
+
+// 		if (!category) {
+// 			return res.status(404).json({ message: 'Category not found' });
+// 		}
+
+// 		// Fetch items by category ID
+// 		const items = await Item.find({ category: category._id }).populate('category').populate('periodes');
+// 		res.json(items);
+// 	} catch (err) {
+// 		console.error('Error fetching items by category name:', err);
+// 		res.status(500).json({ message: 'Error fetching items by category name' });
+// 	}
+// });
 
 // UPDATE AN ITEM -------------------------------------------------------------------------------
 router.patch('/items/:id', Auth, async (req, res) => {
