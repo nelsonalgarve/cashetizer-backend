@@ -5,6 +5,10 @@ const Category = require('../models/category');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const Auth = require('../middleware/auth');
+const cloudinary = require('cloudinary').v2;
+const uniqid = require('uniqid');
+const fs = require('fs');
+const uploadPhotosToCloudinary = require('../helpers/cloudinaryUpload');
 
 const router = new express.Router();
 
@@ -58,40 +62,24 @@ router.get('/items/:id', async (req, res) => {
 });
 
 // POSTER UN ITEM
+
 router.post('/items', async (req, res) => {
 	console.log(req.body);
 	try {
-		console.log(req.body);
-		if (
-			// !req.body.ownerId ||
-			!req.body.name
-			// !req.body.description ||
-			// !req.body.category ||
-			// !req.body.price ||
-			// !req.body.caution ||
-			// // !req.body.isAvailable ||
-			// !req.body.localisation ||
-			// !req.body.periodes.dateStart ||
-			// !req.body.periodes.dateEnd ||
-			// !req.body.etat ||
-			// !req.body.remise
-		) {
+		if (!req.body.name) {
 			return res.status(400).json({ message: 'Missing required fields' });
 		}
+
 		const token = req.header('Authorization').replace('Bearer ', '');
-
-		// Verify the token and decode the payload
 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-		// Find the user based on the _id from the decoded payload
 		const user = await User.findById(decoded._id);
-		console.log('decodedId', decoded);
-		console.log(user.username);
-		console.log('USER_ID_FROM BACKEND', user._id);
 
 		if (!user) {
 			throw new Error('User not found');
 		}
+
+		// Upload photos to Cloudinary
+		const photoUrls = await uploadPhotosToCloudinary(req.body.photos);
 
 		const newItem = new Item({
 			ownerId: user._id,
@@ -99,7 +87,7 @@ router.post('/items', async (req, res) => {
 			description: {
 				details: req.body.description,
 				etat: req.body.etat,
-				photos: [req.body.photos],
+				photos: photoUrls, // Assigning the Cloudinary URLs here
 				videos: [req.body.videos],
 			},
 			category: req.body.category,
@@ -107,9 +95,6 @@ router.post('/items', async (req, res) => {
 				perDay: req.body.prices,
 			},
 			caution: req.body.caution,
-			// isAvailable: req.body.isAvailable,
-			category: req.body.category,
-
 			localisation: {
 				latitude: req.body.localisation.latitude,
 				longitude: req.body.localisation.longitude,
@@ -119,7 +104,6 @@ router.post('/items', async (req, res) => {
 
 		await newItem.save();
 		res.status(201).send(newItem);
-		console.log('ITEM CREATED: ', newItem);
 	} catch (error) {
 		console.log('itemrouter');
 		console.log({ error });
