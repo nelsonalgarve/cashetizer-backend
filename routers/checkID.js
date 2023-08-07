@@ -45,17 +45,44 @@ router.post('/IDCheck', async (req, res) => {
 });
 
 router.post('/Upload', async (req, res) => {
-	const livePhotoPath = `/tmp/${uniqid()}.jpg`;
-	const resultMove = await req.files.photoFromFront.mv(livePhotoPath);
-	console.log(req.body);
-	if (!resultMove) {
-		const livePhotoresultCloudinary = await cloudinary.uploader.upload(livePhotoPath);
-		res.json({ result: true, url: livePhotoresultCloudinary.secure_url });
-	} else {
-		res.json({ result: false, error: resultMove });
-	}
+	try {
+		const photoUrls = [];
 
-	fs.unlinkSync(livePhotoPath);
+		if (Array.isArray(req.files.photoFromFront)) {
+			for (let i = 0; i < req.files.photoFromFront.length; i++) {
+				const photoFromFront = req.files.photoFromFront[i];
+				const livePhotoPath = `/tmp/${uniqid()}.jpg`;
+				const resultMove = await photoFromFront.mv(livePhotoPath);
+
+				if (!resultMove) {
+					const livePhotoResultCloudinary = await cloudinary.uploader.upload(livePhotoPath);
+					photoUrls.push(livePhotoResultCloudinary.secure_url);
+				} else {
+					console.log(`Error uploading image ${i + 1}:`, resultMove);
+				}
+
+				fs.unlinkSync(livePhotoPath);
+			}
+		} else {
+			const photoFromFront = req.files.photoFromFront;
+			const livePhotoPath = `/tmp/${uniqid()}.jpg`;
+			const resultMove = await photoFromFront.mv(livePhotoPath);
+
+			if (!resultMove) {
+				const livePhotoResultCloudinary = await cloudinary.uploader.upload(livePhotoPath);
+				photoUrls.push(livePhotoResultCloudinary.secure_url);
+			} else {
+				console.log('Error uploading image:', resultMove);
+			}
+
+			fs.unlinkSync(livePhotoPath);
+		}
+
+		res.json({ result: true, urls: photoUrls });
+	} catch (error) {
+		console.error('Error uploading photos:', error);
+		res.json({ result: false, error: error.message });
+	}
 });
 
 module.exports = router;
