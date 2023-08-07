@@ -61,12 +61,15 @@ router.get('/items/:id', async (req, res) => {
 	}
 });
 
-// POSTER UN ITEM
+// POSTER UN ITEM ---------------------
 
 router.post('/items', async (req, res) => {
+	console.log('req,files ddddddd', req.files.photos);
+	// console.log(req.files.photoFromFront);
 	console.log(req.body);
+	req.body.periodes = JSON.parse(req.body.periodes);
 	try {
-		if (!req.body.name) {
+		if (!req.body.name || !req.files) {
 			return res.status(400).json({ message: 'Missing required fields' });
 		}
 
@@ -79,7 +82,8 @@ router.post('/items', async (req, res) => {
 		}
 
 		// Upload photos to Cloudinary
-		const photoUrls = await uploadPhotosToCloudinary(req.body.photos);
+		console.log('req.files:', req.files);
+		const photoUrls = await uploadPhotosToCloudinary(req.files.photoFromFront);
 
 		const newItem = new Item({
 			ownerId: user._id,
