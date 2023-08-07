@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 const ObjectID = mongoose.Schema.Types.ObjectId;
+const { Schema } = mongoose;
+
+const periodeSchema = new mongoose.Schema({
+	start: Date,
+	end: Date,
+});
 
 const itemSchema = new mongoose.Schema(
 	{
@@ -103,16 +109,7 @@ const itemSchema = new mongoose.Schema(
 		livraison: {
 			type: String,
 		},
-		periodes: [
-			{
-				start: {
-					type: Date,
-				},
-				end: {
-					type: Date,
-				},
-			},
-		],
+		periodes: [periodeSchema],
 	},
 	{
 		timestamps: true,

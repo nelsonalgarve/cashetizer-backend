@@ -1,6 +1,9 @@
 require('dotenv').config();
-require('./models/connection');
 const express = require('express');
+const mongoose = require('mongoose');
+require('./models/connection');
+const User = require('./models/user');
+const Category = require('./models/category');
 const fileUpload = require('express-fileupload');
 var path = require('path');
 var cookieParser = require('cookie-parser');
