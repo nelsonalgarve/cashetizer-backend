@@ -12,7 +12,7 @@ const itemSchema = new mongoose.Schema(
 		ownerId: {
 			type: ObjectID,
 			// required: true,
-			ref: 'User',
+			ref: 'users',
 		},
 		name: {
 			type: String,

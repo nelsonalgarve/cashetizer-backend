@@ -64,9 +64,9 @@ router.get('/items/:id', async (req, res) => {
 // POSTER UN ITEM ---------------------
 
 router.post('/items', async (req, res) => {
-	console.log('req,files ddddddd', req.files.photos);
+	console.log('req,files ddddddd', req.files);
 	// console.log(req.files.photoFromFront);
-	console.log(req.body);
+	console.log('reqbody --------------------------------------', req.body);
 	req.body.periodes = JSON.parse(req.body.periodes);
 	try {
 		if (!req.body.name || !req.files) {
@@ -141,7 +141,7 @@ router.get('/items/categoryname/:categoryName', async (req, res) => {
 			return res.status(404).json({ message: 'Category not found' });
 		}
 
-		let itemsQuery = Item.find({ category: category._id }).populate('category');
+		let itemsQuery = Item.find({ category: category._id }).populate('category').populate('ownerId', 'username');
 
 		if (startDate && endDate) {
 			itemsQuery = itemsQuery.where('periodes').elemMatch({
