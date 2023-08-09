@@ -68,6 +68,7 @@ router.post('/items', async (req, res) => {
 	// console.log(req.files.photoFromFront);
 	console.log('reqbody --------------------------------------', req.body);
 	req.body.periodes = JSON.parse(req.body.periodes);
+	req.body.localisation = JSON.parse(req.body.localisation);
 	try {
 		if (!req.body.name || !req.files) {
 			return res.status(400).json({ message: 'Missing required fields' });
