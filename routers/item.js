@@ -61,7 +61,7 @@ router.get('/items/:id', async (req, res) => {
 	}
 });
 
-// POSTER UN ITEM ---------------------
+// POSTER UN ITEM --------------------- .
 
 router.post('/items', Auth, async (req, res) => {
 	console.log('req,files ddddddd', req.files);
