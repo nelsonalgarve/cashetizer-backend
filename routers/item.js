@@ -61,10 +61,11 @@ router.get('/items/:id', async (req, res) => {
 	}
 });
 
-// POSTER UN ITEM --------------------- .
+// POSTER UN ITEM VERIFICATION DU TOKEN DE L'UTILISATEUR PAR LE MIDDLEWARE auth.js --------------------- .
+// Extraction de l'_id grace au token de l'user 'ownerId' recupéré par req.user._id
 
 router.post('/items', Auth, async (req, res) => {
-	console.log('req,files ddddddd', req.files);
+	console.log('reqFiles---------------', req.files);
 	// console.log(req.files.photoFromFront);
 	console.log('reqbody --------------------------------------', req.body);
 	req.body.periodes = JSON.parse(req.body.periodes);
@@ -73,6 +74,8 @@ router.post('/items', Auth, async (req, res) => {
 		if (!req.body.name || !req.files) {
 			return res.status(400).json({ message: 'Missing required fields' });
 		}
+
+		// SHUNT DU MIDDLEWARE POUR TESTS
 
 		// const token = req.header('Authorization').replace('Bearer ', '');
 		// const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -92,7 +95,7 @@ router.post('/items', Auth, async (req, res) => {
 			description: {
 				details: req.body.description,
 				etat: req.body.etat,
-				photos: photoUrls, // Assigning the Cloudinary URLs here
+				photos: photoUrls,
 				videos: [req.body.videos],
 			},
 			category: req.body.category,
@@ -196,31 +199,6 @@ router.get('/items/categoryname/:categoryName', async (req, res) => {
 		res.status(500).json({ message: 'Error fetching items by category name', error: err.message });
 	}
 });
-
-// router.patch('/items/:id', Auth, async (req, res) => {
-// 	const updates = Object.keys(req.body);
-// 	const allowedUpdates = ['name', 'description', 'category', 'price'];
-
-// 	const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
-
-// 	if (!isValidOperation) {
-// 		return res.status(400).send({ error: 'invalid updates' });
-// 	}
-
-// 	try {
-// 		const item = await Item.findOne({ _id: req.params.id });
-
-// 		if (!item) {
-// 			return res.status(404).send();
-// 		}
-
-// 		updates.forEach((update) => (item[update] = req.body[update]));
-// 		await item.save();
-// 		res.send(item);
-// 	} catch (error) {
-// 		res.status(400).send(error);
-// 	}
-// });
 
 //delete item
 router.delete('/items/:id', Auth, async (req, res) => {
