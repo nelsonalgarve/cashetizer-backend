@@ -213,6 +213,24 @@ router.delete('/items/:id', Auth, async (req, res) => {
 	}
 });
 
+// ITEMS BY ownerId
+
+router.get('/items/by-owner/:ownerId', async (req, res) => {
+	try {
+		const ownerId = new mongoose.Types.ObjectId(req.params.ownerId); // Convert the ownerId from string to ObjectId
+
+		const items = await Item.find({ ownerId });
+
+		if (!items.length) {
+			return res.status(404).send({ message: 'No items found for this ownerId' });
+		}
+
+		return res.status(200).send(items);
+	} catch (error) {
+		console.error('Error fetching items:', error);
+		return res.status(500).send({ message: 'Internal server error' });
+	}
+});
 // categories autocomplete
 
 router.get('/items/autocomplete', async (req, res) => {
