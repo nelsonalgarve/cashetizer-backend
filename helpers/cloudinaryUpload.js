@@ -7,7 +7,7 @@ async function uploadPhotosToCloudinary(photoFiles) {
 	const photoUrls = [];
 
 	const processAndUpload = async (photo) => {
-		const livePhotoPath = `/tmp/${uniqid()}.jpg`;
+		const livePhotoPath = `./tmp/${uniqid()}.jpg`;
 		const resultMove = await photo.mv(livePhotoPath);
 
 		if (!resultMove) {
