@@ -63,30 +63,31 @@ router.get('/items/:id', async (req, res) => {
 
 // POSTER UN ITEM ---------------------
 
-router.post('/items', async (req, res) => {
+router.post('/items', Auth, async (req, res) => {
 	console.log('req,files ddddddd', req.files);
 	// console.log(req.files.photoFromFront);
 	console.log('reqbody --------------------------------------', req.body);
 	req.body.periodes = JSON.parse(req.body.periodes);
+	req.body.localisation = JSON.parse(req.body.localisation);
 	try {
-		if (!req.body.name || !req.files) {
-			return res.status(400).json({ message: 'Missing required fields' });
-		}
+		// if (!req.body.name || !req.files) {
+		// 	return res.status(400).json({ message: 'Missing required fields' });
+		// }
 
-		const token = req.header('Authorization').replace('Bearer ', '');
-		const decoded = jwt.verify(token, process.env.JWT_SECRET);
-		const user = await User.findById(decoded._id);
+		// const token = req.header('Authorization').replace('Bearer ', '');
+		// const decoded = jwt.verify(token, process.env.JWT_SECRET);
+		// const user = await User.findById(decoded._id);
 
-		if (!user) {
-			throw new Error('User not found');
-		}
+		// if (!user) {
+		// 	throw new Error('User not found');
+		// }
 
 		// Upload photos to Cloudinary
 		console.log('req.files:', req.files);
 		const photoUrls = await uploadPhotosToCloudinary(req.files.photoFromFront);
 
 		const newItem = new Item({
-			ownerId: user._id,
+			ownerId: req.user._id,
 			name: req.body.name,
 			description: {
 				details: req.body.description,
