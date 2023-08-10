@@ -70,9 +70,9 @@ router.post('/items', Auth, async (req, res) => {
 	req.body.periodes = JSON.parse(req.body.periodes);
 	req.body.localisation = JSON.parse(req.body.localisation);
 	try {
-		// if (!req.body.name || !req.files) {
-		// 	return res.status(400).json({ message: 'Missing required fields' });
-		// }
+		if (!req.body.name || !req.files) {
+			return res.status(400).json({ message: 'Missing required fields' });
+		}
 
 		// const token = req.header('Authorization').replace('Bearer ', '');
 		// const decoded = jwt.verify(token, process.env.JWT_SECRET);
